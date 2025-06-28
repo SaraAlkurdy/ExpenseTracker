@@ -1,0 +1,54 @@
+<div class="header-container">
+      <!-- Top Header Bar -->
+      <div class="top-header">
+        <div class="header-content">
+          <h1 class="app-title">Expense!</h1>
+          <div class="header-time">{{ currentTime() }}</div>
+          <button 
+            class="logout-button" 
+            (click)="onLogout()"
+            mat-button
+            type="button"
+            title="Logout"
+          >
+            <mat-icon>logout</mat-icon>
+            <span class="logout-text">Logout</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Main Header Section -->
+      <div class="main-header">
+        <div class="header-section">
+          <div class="profile-and-filter-row">
+            <div class="profile-section">
+              <div class="profile-image">
+                <img
+                  src="https://randomuser.me/api/portraits/men/32.jpg"
+                  alt="Profile"
+                />
+              </div>
+              <div class="greeting">
+                <h1>{{ getGreeting() }}</h1>
+                <p>{{ displayName || 'User' }}</p>
+              </div>
+            </div>
+            
+            <div class="filter-controls">
+              <div class="dropdown-container">
+                <select
+                  class="filter-dropdown"
+                  [(ngModel)]="currentFilter"
+                  (ngModelChange)="onFilterChange($event)"
+                >
+                  <option value="This Month">This Month</option>
+                  <option value="Last 7 Days">Last 7 Days</option>
+                  <option value="All">All</option>
+                </select>
+                <mat-icon class="dropdown-icon">arrow_drop_down</mat-icon>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>

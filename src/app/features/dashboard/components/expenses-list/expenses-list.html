@@ -1,0 +1,56 @@
+<div class="expenses-section">
+  <h2 class="section-title">Recent Expenses</h2>
+
+@if(loading()) {
+    <div class="loading-spinner">
+    <mat-spinner diameter="24"></mat-spinner>
+  </div>
+}
+
+  @if(!loading() && expenses().length === 0) {
+  <div class="empty-state">
+    <p>No expenses found for the selected period</p>
+    <small>Try changing the filter or add your first expense</small>
+  </div>
+  } @if(!loading() && expenses().length > 0) {
+  <div class="expenses-list">
+    @for (expense of expenses(); track expense) {
+    <div class="expense-item">
+      <div class="expense-icon">
+        <mat-icon>{{ getCategoryIcon(expense.category) }}</mat-icon>
+      </div>
+      <div class="expense-details">
+        <h3>{{ expense.category }}</h3>
+        <p>{{ expense.merchant || 'Merchant' }}</p>
+        <small>{{ expense.date | date:'mediumDate' }}</small>
+      </div>
+      <div class="expense-amount">
+        <p>{{ expense.amount | currency:expense.currency }}</p>
+        @if(expense.currency !== 'USD') {
+        <small> {{ expense.convertedAmount | currency:'USD' }} </small>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  }
+  <!-- Pagination Controls -->
+  @if(!loading() && expenses().length > 0) {
+  <div class="pagination-controls">
+    @if(hasMoreExpenses()) {
+    <button
+      class="load-more-button"
+      (click)="onLoadMore()"
+      [disabled]="loading()"
+    >
+      <mat-icon>expand_more</mat-icon>
+      Load More
+    </button>
+    } @if(!hasMoreExpenses() && expenses().length > 0) {
+    <div class="expenses-count">
+      <small>Showing all {{ expenses().length }} expenses</small>
+    </div>
+    }
+  </div>
+  }
+</div>

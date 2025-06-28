@@ -1,0 +1,125 @@
+<div class="login-container">
+  <div class="login-card">
+    <!-- Header -->
+    <div class="login-header">
+      <h1 class="app-title">Expenset.</h1>
+      <h2 class="login-title">Login</h2>
+    </div>
+
+    <!-- Login Form -->
+    <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+      <!-- Email Field -->
+      <div class="form-group" [class.invalid]="isFieldInvalid('email')">
+        <label class="form-label" for="email">Email</label>
+        <div class="custom-input-container">
+          <input
+            class="custom-input"
+            id="email"
+            type="email"
+            formControlName="email"
+            placeholder="Enter your Email"
+          />
+          <mat-icon class="input-icon">email</mat-icon>
+        </div>
+        @if(loginForm.get('email')?.touched && loginForm.get('email')?.errors) {
+        <div class="error-messages">
+          @if(loginForm.get('email')?.hasError('required')) {
+          <span class="error-text"> Email is required </span>
+          } @if(loginForm.get('email')?.hasError('email')) {
+          <span class="error-text"> Please enter a valid email address </span>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Password Field -->
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="custom-input-container">
+          <input
+            class="custom-input"
+            id="password"
+            [type]="hidePassword ? 'password' : 'text'"
+            formControlName="password"
+            placeholder="Enter your password"
+          />
+          <button
+            class="toggle-password-btn"
+            type="button"
+            (click)="togglePasswordVisibility()"
+            [attr.aria-label]="'Toggle password visibility'"
+          >
+            <mat-icon
+              >{{hidePassword ? 'visibility_off' : 'visibility'}}</mat-icon
+            >
+          </button>
+        </div>
+        @if(loginForm.get('password')?.touched &&
+        loginForm.get('password')?.errors) {
+        <div class="error-messages">
+          @if(loginForm.get('password')?.hasError('required')) {
+          <span class="error-text"> Password is required </span>
+          } @if(loginForm.get('password')?.hasError('minlength')) {
+          <span class="error-text">
+            Password must be at least 6 characters long
+          </span>
+          }
+        </div>
+        }
+      </div>
+
+      <!-- Rest of your template remains the same -->
+      <a class="forgot-password-link">Forgot password</a>
+
+      <button
+        color="primary"
+        type="submit"
+        class="login-button"
+        [disabled]="loginForm.invalid"
+      >
+        <span>Login</span>
+      </button>
+    </form>
+
+    <!-- Divider with "Or Login with" -->
+    <div class="divider-section">
+      <div class="divider-line"></div>
+      <span class="divider-text">Or Login with</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Social Login Buttons -->
+    <div class="social-login-section">
+      <button
+        mat-button
+        class="social-login-button"
+        (click)="loginWithGoogle()"
+        [disabled]="isLoading"
+      >
+        <img
+          src="../../../assets/images/google-icon.png"
+          alt="Google"
+          class="social-icon"
+        />
+        <span>Continue with Google</span>
+      </button>
+
+      <button mat-button class="social-login-button" [disabled]="isLoading">
+        <img
+          src="../../../assets/images/apple-icon.png"
+          alt="Apple"
+          class="social-icon"
+        />
+        <span>Continue with Google</span>
+      </button>
+    </div>
+
+    <!-- Additional Links -->
+    <div class="auth-links">
+      <div class="signup-link">
+        Don't have an account?
+        <a routerLink="/auth/register" class="signup-link-text">Sign up</a>
+      </div>
+    </div>
+  </div>
+</div>

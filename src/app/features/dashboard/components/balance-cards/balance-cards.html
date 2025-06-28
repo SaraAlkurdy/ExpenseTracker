@@ -1,0 +1,16 @@
+<div class="balance-cards">
+  <div class="balance-card">
+    <h3>Total Balance</h3>
+    <p>{{ totalBalance() | currency }}</p>
+  </div>
+  <div class="stats-row">
+    <div class="stat-card">
+      <h4>Income</h4>
+      <p>{{ totalIncome() | currency }}</p>
+    </div>
+    <div class="stat-card">
+      <h4>Expenses</h4>
+      <p>{{ totalExpenses() | currency }}</p>
+    </div>
+  </div>
+</div>

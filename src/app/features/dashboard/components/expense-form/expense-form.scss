@@ -1,0 +1,227 @@
+@use '../../../../../assets/styles/variables' as vars;
+@use "sass:color";
+
+.add-expense-container {
+    padding: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+    background-color: vars.$white;
+    min-height: 100vh;
+}
+
+.header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 3rem;
+
+    .back-button {
+        margin-right: 1.5rem;
+        color: vars.$gray-600;
+        background: none;
+        border: none;
+    }
+
+    h1 {
+        font: 700 2rem/1.2 'Inter', sans-serif;
+        color: vars.$gray-800;
+        margin: 0;
+    }
+}
+
+.expense-form {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+
+    label {
+        font: 500 1rem/1.5 'Inter', sans-serif;
+        color: vars.$gray-700;
+    }
+
+    .form-control {
+        padding: 1rem;
+        border: 1px solid vars.$gray-300;
+        border-radius: 8px;
+        font: 400 1.125rem/1.5 'Inter', sans-serif;
+        color: vars.$gray-800;
+        background-color: vars.$white;
+
+        &:focus {
+            outline: none;
+            border-color: vars.$primary;
+            box-shadow: 0 0 0 2px rgba(vars.$primary, 0.2);
+        }
+    }
+
+    select.form-control {
+        appearance: none;
+        background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='currentColor' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e");
+        background-repeat: no-repeat;
+        background-position: right 1rem center;
+        background-size: 1.25rem;
+    }
+
+    textarea.form-control {
+        min-height: 120px;
+        resize: vertical;
+    }
+
+    .error-message {
+        color: vars.$error;
+        font: 400 0.875rem/1.5 'Inter', sans-serif;
+        margin-top: 0.25rem;
+    }
+}
+
+.amount-row {
+    display: flex;
+    gap: 1rem;
+
+    .amount-input {
+        flex: 2;
+    }
+
+    .currency-select {
+        flex: 1;
+        min-width: 150px;
+        max-height: 200px;
+        overflow-y: auto;
+    }
+}
+
+.file-upload {
+    input[type="file"] {
+        display: none;
+    }
+
+    .upload-button {
+        display: flex;
+        align-items: center;
+        gap: 0.75rem;
+        padding: 1rem;
+        border: 2px dashed vars.$gray-400;
+        border-radius: 12px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font: 500 1rem/1.5 'Inter', sans-serif;
+        color: vars.$gray-700;
+        background-color: vars.$gray-50;
+
+        &:hover {
+            border-color: vars.$primary;
+            background-color: rgba(vars.$primary, 0.05);
+        }
+
+        mat-icon {
+            color: vars.$primary;
+            font-size: 24px;
+            width: 24px;
+            height: 24px;
+        }
+    }
+}
+
+.preview-container {
+    position: relative;
+    margin-top: 1rem;
+    max-width: 300px;
+
+    .receipt-preview {
+        width: 100%;
+        border-radius: 12px;
+        border: 1px solid vars.$gray-200;
+    }
+
+    .remove-receipt {
+        position: absolute;
+        top: -12px;
+        right: -12px;
+        width: 32px;
+        height: 32px;
+        border-radius: 50%;
+        background-color: vars.$error;
+        color: vars.$white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: none;
+        cursor: pointer;
+        padding: 0;
+
+        mat-icon {
+            font-size: 20px;
+            width: 20px;
+            height: 20px;
+        }
+    }
+}
+
+.submit-button {
+    width: 100%;
+    padding: 1.25rem;
+    background-color: vars.$primary;
+    color: vars.$white;
+    border: none;
+    border-radius: 12px;
+    font: 600 1.125rem/1.5 'Inter', sans-serif;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.75rem;
+
+    &:hover {
+        background-color: color.adjust(vars.$primary, $lightness: -10%);
+    }
+
+    &:disabled {
+        background-color: vars.$gray-300;
+        cursor: not-allowed;
+        opacity: 0.7;
+    }
+
+    .loading-spinner {
+        display: inline-block;
+        width: 24px;
+        height: 24px;
+        border: 3px solid rgba(255, 255, 255, 0.3);
+        border-radius: 50%;
+        border-top-color: white;
+        animation: spin 1s ease-in-out infinite;
+    }
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* Responsive adjustments */
+@media (max-width: 480px) {
+    .add-expense-container {
+        padding: 1rem;
+        max-width: 100%;
+    }
+
+    .header h1 {
+        font-size: 1.5rem;
+    }
+
+    .amount-row {
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .amount-input,
+        .currency-select {
+            width: 100%;
+        }
+    }
+}

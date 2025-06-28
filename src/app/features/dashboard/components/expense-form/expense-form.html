@@ -1,0 +1,141 @@
+<div class="add-expense-container">
+  <div class="header">
+    <button mat-icon-button class="back-button" routerLink="../dashboard">
+      <mat-icon>arrow_back</mat-icon>
+    </button>
+    <h1>Add Expense</h1>
+  </div>
+
+  <form class="expense-form" [formGroup]="form" (ngSubmit)="onSubmit()">
+    <!-- Category Selection -->
+    <div class="form-group">
+      <label for="category">Category</label>
+      <select 
+        id="category" 
+        class="form-control" 
+        formControlName="category"
+        required
+      >
+        <option value="" disabled selected>Select a category</option>
+        @for (cat of categories; track cat.value) {
+          <option [value]="cat.value">
+            {{ cat.value }}
+          </option>
+        }
+      </select>
+      @if (form.get('category')?.invalid && form.get('category')?.touched) {
+        <div class="error-message">Category is required</div>
+      }
+    </div>
+
+    <!-- Amount and Currency -->
+    <div class="form-group">
+      <label for="amount">Amount</label>
+      <div class="amount-row">
+        <input
+          type="number"
+          id="amount"
+          class="form-control amount-input"
+          formControlName="amount"
+          placeholder="0.00"
+          min="0.01"
+          step="0.01"
+          required
+        />
+        <select 
+          class="form-control currency-select"
+          formControlName="currency"
+        >
+          @for (currency of currencies; track currency) {
+            <option [value]="currency">{{ currency }}</option>
+          }
+        </select>
+      </div>
+      @if (form.get('amount')?.invalid && form.get('amount')?.touched) {
+        <div class="error-message">
+          @if (form.get('amount')?.hasError('required')) {
+            Amount is required
+          } @else if (form.get('amount')?.hasError('min')) {
+            Amount must be positive
+          }
+        </div>
+      }
+    </div>
+
+    <!-- Date Picker -->
+    <div class="form-group">
+      <label for="date">Date</label>
+      <input
+        type="date"
+        id="date"
+        class="form-control"
+        formControlName="date"
+        required
+      />
+      @if (form.get('date')?.invalid && form.get('date')?.touched) {
+        <div class="error-message">Date is required</div>
+      }
+    </div>
+
+    <!-- Merchant -->
+    <div class="form-group">
+      <label for="merchant">Merchant (optional)</label>
+      <input
+        type="text"
+        id="merchant"
+        class="form-control"
+        formControlName="merchant"
+        placeholder="Where was this expense?"
+      />
+    </div>
+
+    <!-- Notes -->
+    <div class="form-group">
+      <label for="notes">Notes (optional)</label>
+      <textarea
+        id="notes"
+        class="form-control"
+        formControlName="notes"
+        rows="3"
+        placeholder="Any additional details..."
+      ></textarea>
+    </div>
+
+    <!-- Receipt Upload -->
+    <div class="form-group">
+      <label>Attach Receipt (optional)</label>
+      <div class="file-upload">
+        <input
+          type="file"
+          id="receipt"
+          (change)="onFileSelected($event)"
+          accept="image/*"
+        />
+        <label for="receipt" class="upload-button">
+          <mat-icon>upload</mat-icon>
+          <span>{{ receiptPreview ? 'Change Image' : 'Upload Image' }}</span>
+        </label>
+      </div>
+      @if (receiptPreview) {
+        <div class="preview-container">
+          <img [src]="receiptPreview" alt="Receipt preview" class="receipt-preview" />
+          <button type="button" class="remove-receipt" (click)="removeReceipt()">
+            <mat-icon>close</mat-icon>
+          </button>
+        </div>
+      }
+    </div>
+
+    <!-- Submit Button -->
+    <button 
+      type="submit" 
+      class="submit-button" 
+      [disabled]="isLoading"
+    >
+      @if (isLoading) {
+        <span class="loading-spinner"></span>
+      }
+      Save Expense
+    </button>
+  </form>
+</div>

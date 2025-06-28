@@ -1,0 +1,92 @@
+@use '../../../../../assets/styles/variables' as vars;
+
+.balance-cards {
+  background-color: vars.$secondary;
+  border-radius: 12px;
+  padding: 1.5rem;
+  color: white;
+  margin: 1rem auto;
+  box-shadow: 0 4px 12px rgba(vars.$secondary, 0.2);
+  position: relative;
+  z-index: 2;
+  top: -5rem;
+  width: min(70%, 1200px);
+
+  .balance-card {
+    margin-bottom: 1rem;
+
+    h3 {
+      font: 500 1rem/1.5 'Inter', sans-serif;
+      margin: 0 0 0.25rem;
+      opacity: 0.9;
+    }
+
+    p {
+      font: 600 1.75rem/1.2 'Inter', sans-serif;
+      margin: 0;
+    }
+  }
+
+  .stats-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+
+    .stat-card {
+      flex: 1 1 200px;
+
+      h4 {
+        font: 500 1rem/1.5 'Inter', sans-serif;
+        margin: 0 0 0.25rem;
+        opacity: 0.9;
+      }
+
+      p {
+        font: 600 1.125rem/1.2 'Inter', sans-serif;
+        margin: 0;
+      }
+    }
+  }
+}
+
+/* Responsive Adjustments */
+@media (max-width: 768px) {
+  .balance-cards {
+    padding: 1.25rem;
+    top: -4.5rem;
+    margin: 1rem auto;
+
+    .balance-card p {
+      font-size: 1.5rem;
+    }
+
+    .stats-row .stat-card {
+      flex: 1 1 150px;
+    }
+  }
+}
+
+@media (max-width: 480px) {
+  .balance-cards {
+    padding: 1rem;
+    margin: 0 auto;
+    top: -2rem;
+    border-radius: 8px;
+
+    .balance-card p {
+      font-size: 1.25rem;
+    }
+
+    .stats-row {
+      gap: 0.75rem;
+      
+      .stat-card {
+        flex: 1 1 100%;
+        
+        p {
+          font-size: 1rem;
+        }
+      }
+    }
+  }
+}

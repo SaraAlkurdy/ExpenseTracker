@@ -1,0 +1,57 @@
+@use '../../../../assets/styles/variables' as vars;
+
+.dashboard-container {
+  padding: 0;
+  max-width: 100%;
+  margin: 0 auto;
+  background-color: vars.$gray-50;
+  min-height: 100vh;
+  position: relative;
+  padding-bottom: 80px; // Account for bottom navigation
+  overflow-x: hidden;
+
+  @media screen and (max-width: 768px) {
+    padding-bottom: 60px;
+  }
+}
+
+.content-section {
+  position: relative;
+  z-index: 1;
+  max-width: 90%;
+  margin: 0 auto;
+
+  @media screen and (max-width: 1200px) {
+    max-width: 95%;
+  }
+
+  @media screen and (max-width: 768px) {
+    max-width: 100%;
+    padding: 0 16px;
+  }
+}
+
+/* Ensure proper spacing for fixed elements */
+:host {
+  display: block;
+  width: 100%;
+  min-height: 100vh;
+}
+
+/* Loading overlay */
+.loading-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.8);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+
+  @media screen and (max-width: 768px) {
+    background-color: rgba(255, 255, 255, 0.9);
+  }
+}

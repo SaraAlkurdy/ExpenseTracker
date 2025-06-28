@@ -1,0 +1,389 @@
+@use 'variables';
+
+// ===== RESPONSIVE MIXINS =====
+@mixin respond-to($breakpoint) {
+  @if $breakpoint == xs {
+    @media (max-width: #{$breakpoint-sm - 1px}) { @content; }
+  }
+  @if $breakpoint == sm {
+    @media (min-width: #{$breakpoint-sm}) { @content; }
+  }
+  @if $breakpoint == md {
+    @media (min-width: #{$breakpoint-md}) { @content; }
+  }
+  @if $breakpoint == lg {
+    @media (min-width: #{$breakpoint-lg}) { @content; }
+  }
+  @if $breakpoint == xl {
+    @media (min-width: #{$breakpoint-xl}) { @content; }
+  }
+  @if $breakpoint == xxl {
+    @media (min-width: #{$breakpoint-xxl}) { @content; }
+  }
+}
+
+// ===== FLEXBOX MIXINS =====
+@mixin flex-center {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-between {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+@mixin flex-column {
+  display: flex;
+  flex-direction: column;
+}
+
+@mixin flex-column-center {
+  @include flex-column;
+  align-items: center;
+  justify-content: center;
+}
+
+@mixin flex-start {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+}
+
+@mixin flex-end {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+// ===== CARD MIXINS =====
+@mixin card-base {
+  background-color: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+  border: 1px solid #f0f0f0;
+}
+
+@mixin card-hover {
+  transition: all 0.2s ease;
+  cursor: pointer;
+  
+  &:hover {
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+    transform: translateY(-2px);
+  }
+}
+
+@mixin card-shadow-light {
+  box-shadow: 0 2px 12px rgba(0, 0, 0, 0.06);
+}
+
+@mixin card-shadow-medium {
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+@mixin card-shadow-heavy {
+  box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+// ===== BUTTON MIXINS =====
+@mixin button-base {
+  border-radius: 8px;
+  font-weight: 500;
+  text-transform: none;
+  letter-spacing: 0.02em;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  outline: none;
+}
+
+@mixin button-primary {
+  @include button-base;
+  background-color: #3498db;
+  color: #ffffff;
+  
+  &:hover:not(:disabled) {
+    background-color: #2980b9;
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.7;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@mixin button-outline {
+  @include button-base;
+  background-color: #ffffff;
+  border: 1.5px solid #e9ecef;
+  color: #2c3e50;
+  
+  &:hover:not(:disabled) {
+    border-color: #d1d5db;
+    background-color: #f8f9fa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  &:active {
+    transform: translateY(0);
+  }
+  
+  &:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+}
+
+@mixin button-social($color) {
+  @include button-outline;
+  
+  &:hover:not(:disabled) {
+    border-color: $color;
+    color: $color;
+    background-color: rgba($color, 0.05);
+  }
+}
+
+// ===== FORM MIXINS =====
+@mixin form-label {
+  display: block;
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #2c3e50;
+  margin-bottom: 0.5rem;
+}
+
+@mixin form-label-required {
+  @include form-label;
+  
+  &::after {
+    content: " *";
+    color: #e74c3c;
+  }
+}
+
+@mixin form-input-base {
+  width: 100%;
+  font-size: 0.875rem;
+  color: #2c3e50;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  border: 1px solid #e9ecef;
+  transition: all 0.2s ease;
+  
+  &::placeholder {
+    color: #95a5a6;
+    opacity: 1;
+  }
+  
+  &:focus {
+    outline: none;
+    border-color: #3498db;
+    box-shadow: 0 0 0 3px rgba(52, 152, 219, 0.1);
+  }
+}
+
+@mixin form-error-text {
+  display: block;
+  font-size: 0.75rem;
+  color: #e74c3c;
+  font-weight: 400;
+  line-height: 1.4;
+  margin-top: 0.25rem;
+  
+  &:not(:last-child) {
+    margin-bottom: 0.25rem;
+  }
+  
+  i {
+    margin-right: 0.25rem;
+  }
+}
+
+// ===== TYPOGRAPHY MIXINS =====
+@mixin heading-primary {
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: #2c3e50;
+  margin: 0;
+  letter-spacing: -0.02em;
+  line-height: 1.2;
+}
+
+@mixin heading-secondary {
+  font-size: 1.5rem;
+  font-weight: 500;
+  color: #34495e;
+  margin: 0;
+  line-height: 1.3;
+}
+
+@mixin text-small {
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+@mixin text-xs {
+  font-size: 0.75rem;
+  line-height: 1.4;
+}
+
+// ===== SPACING MIXINS =====
+@mixin spacing-vertical($size) {
+  margin-top: $size;
+  margin-bottom: $size;
+}
+
+@mixin spacing-horizontal($size) {
+  margin-left: $size;
+  margin-right: $size;
+}
+
+@mixin padding-all($size) {
+  padding: $size;
+}
+
+// ===== ANIMATION MIXINS =====
+@mixin spin-animation {
+  animation: spin 1s linear infinite;
+  
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+}
+
+@mixin fade-in {
+  animation: fadeIn 0.3s ease-in-out;
+  
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+  }
+}
+
+@mixin slide-up {
+  animation: slideUp 0.3s ease-out;
+  
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+}
+
+// ===== UTILITY MIXINS =====
+@mixin full-width {
+  width: 100%;
+}
+
+@mixin text-center {
+  text-align: center;
+}
+
+@mixin text-truncate {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+@mixin visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+// ===== DIVIDER MIXINS =====
+@mixin divider-horizontal {
+  display: flex;
+  align-items: center;
+  margin: 1.5rem 0;
+  
+  &::before,
+  &::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background-color: #e9ecef;
+  }
+}
+
+@mixin divider-with-text($text-color: #6c757d, $bg-color: #ffffff) {
+  @include flex-center;
+  margin: 1.5rem 0;
+  position: relative;
+  
+  .divider-line {
+    flex: 1;
+    height: 1px;
+    background-color: #e9ecef;
+  }
+  
+  .divider-text {
+    padding: 0 1rem;
+    font-size: 0.875rem;
+    color: $text-color;
+    background-color: $bg-color;
+    font-weight: 500;
+    white-space: nowrap;
+  }
+}
+
+// ===== ACCESSIBILITY MIXINS =====
+@mixin focus-visible {
+  &:focus-visible {
+    outline: 2px solid #3498db;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+}
+
+// ===== ICON MIXINS =====
+@mixin icon-base {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-style: normal;
+  font-variant: normal;
+  text-rendering: auto;
+  line-height: 1;
+}
+
+@mixin icon-size($size) {
+  font-size: $size;
+  width: $size;
+  height: $size;
+}
+
+@mixin social-icon {
+  @include icon-base;
+  width: 20px;
+  height: 20px;
+  margin-right: 0.75rem;
+  flex-shrink: 0;
+}

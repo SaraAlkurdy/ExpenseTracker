@@ -1,0 +1,30 @@
+<div class="dashboard-container">
+  <app-header
+    [currentTime]="currentTime"
+    [displayName]="displayName"
+    [currentFilter]="currentFilter"
+    (logout)="logout()"
+    (filterChanged)="changeFilter($event)"
+  >
+  </app-header>
+
+  <div class="content-section">
+    <app-balance-cards
+      [totalBalance]="totalBalance"
+      [totalIncome]="totalIncome"
+      [totalExpenses]="totalExpenses"
+    >
+    </app-balance-cards>
+
+    <app-expenses-list
+      [expenses]="filteredExpenses"
+      [loading]="loading"
+      [hasMoreExpenses]="hasMoreExpenses"
+      [currentFilter]="currentFilter"
+      (loadMore)="loadMoreExpenses()"
+    >
+    </app-expenses-list>
+  </div>
+
+  <app-bottom-nav (addExpense)="navigateToAddExpense()"></app-bottom-nav>
+</div>
