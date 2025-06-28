@@ -90,12 +90,7 @@
 
     <!-- Social Login Buttons -->
     <div class="social-login-section">
-      <button
-        mat-button
-        class="social-login-button"
-        (click)="loginWithGoogle()"
-        [disabled]="isLoading"
-      >
+      <button mat-button class="social-login-button">
         <img
           src="../../../assets/images/google-icon.png"
           alt="Google"
@@ -104,7 +99,7 @@
         <span>Continue with Google</span>
       </button>
 
-      <button mat-button class="social-login-button" [disabled]="isLoading">
+      <button mat-button class="social-login-button">
         <img
           src="../../../assets/images/apple-icon.png"
           alt="Apple"
