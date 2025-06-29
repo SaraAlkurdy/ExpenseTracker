@@ -25,15 +25,20 @@ export class Expense {
   /**
    * Get all expenses with optional filtering
    */
-  getExpenses(filter?: {
-    startDate?: Date;
-    endDate?: Date;
-    category?: string;
-  }): Observable<ExpenseInterface[]> {
+  getExpenses(
+    filter?: {
+      startDate?: Date;
+      endDate?: Date;
+      category?: string;
+    },
+    convertToUSD = true
+  ): Observable<ExpenseInterface[]> {
     return of(this.getFromLocalStorage()).pipe(
       map((expenses) => this.filterExpenses(expenses, filter)),
       switchMap((expenses) =>
-        this.currencyService.convertExpensesToUSD(expenses)
+        convertToUSD
+          ? this.currencyService.convertExpensesToUSD(expenses)
+          : of(expenses)
       )
     );
   }

@@ -30,7 +30,7 @@
               </div>
               <div class="greeting">
                 <h1>{{ getGreeting() }}</h1>
-                <p>{{ displayName || 'User' }}</p>
+                <p>{{ displayName() || 'User' }}</p>
               </div>
             </div>
             
@@ -38,7 +38,7 @@
               <div class="dropdown-container">
                 <select
                   class="filter-dropdown"
-                  [(ngModel)]="currentFilter"
+                  [ngModel]="currentFilter()"
                   (ngModelChange)="onFilterChange($event)"
                 >
                   <option value="This Month">This Month</option>

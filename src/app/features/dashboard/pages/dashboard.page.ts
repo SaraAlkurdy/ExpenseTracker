@@ -10,7 +10,7 @@ import { Header } from '../components/header/header';
 import { BottomNav } from '../components/bottom-nav/bottom-nav';
 import { ExpensesList } from '../components/expenses-list/expenses-list';
 import { BalanceCards } from '../components/balance-cards/balance-cards';
-import { forkJoin, Subject, switchMap, takeUntil } from 'rxjs';
+import { BehaviorSubject, Subject, switchMap, takeUntil } from 'rxjs';
 import { Currency } from '../../../core/services/currency';
 
 @Component({
@@ -28,16 +28,17 @@ export class DashboardPage implements OnInit, OnDestroy {
   hasMoreExpenses = true;
   currentPage = 1;
   itemsPerPage = 10;
-  currentFilter = 'This Month';
+  
+  private filterSubject = new BehaviorSubject<string>('This Month');
+  currentFilter = this.filterSubject.value;
 
-  totalBalance = 2548;
-  totalIncome = 10840;
-  totalExpenses = 1884;
+  totalBalance = 0;
+  totalIncome = 0;
+  totalExpenses = 0;
 
   currentTime = '';
   displayName = '';
   username = '';
-  
 
   private destroy$ = new Subject<void>();
 
@@ -46,12 +47,13 @@ export class DashboardPage implements OnInit, OnDestroy {
     private expenseService: Expense,
     private authService: Auth,
     private currencyService: Currency
-  ) {}
+  ) {
+    this.setupFilterSubscription();
+  }
 
   ngOnInit(): void {
     this.loadUserInfo();
     this.updateTime();
-    this.loadDashboardData();
   }
 
   ngOnDestroy(): void {
@@ -60,7 +62,40 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Load user information
+   * Sets up subscription to filter changes and handles expense data loading
+   * Converts expenses to USD and applies filtering
+   */
+private setupFilterSubscription(): void {
+  this.filterSubject
+    .pipe(
+      takeUntil(this.destroy$),
+      switchMap(filter => {
+        this.currentFilter = filter;
+        this.currentPage = 1;
+        this.loading = true;
+        const { startDate, endDate } = this.getDateRange();
+
+        return this.expenseService.getExpenses({ startDate, endDate });
+      })
+    )
+    .subscribe({
+      next: (convertedExpenses) => {
+        this.expenses = convertedExpenses;
+        this.applyFilter();
+        this.loading = false;
+      },
+      error: (error) => {
+        console.error('Error loading dashboard data:', error);
+        this.expenses = [];
+        this.filteredExpenses = [];
+        this.loading = false;
+      },
+    });
+}
+
+  /**
+   * Loads user information from the auth service
+   * Sets username and display name based on the email
    */
   loadUserInfo(): void {
     const fullEmail = this.authService.getUsername();
@@ -75,7 +110,10 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Extract display name from email
+   * Extracts a display name from an email address
+   * Handles different email formats with dots, underscores, or hyphens
+   * @param email The email address to extract the display name from
+   * @returns Formatted display name
    */
   private extractDisplayName(email: string): string {
     if (!email || !email.includes('@')) {
@@ -105,14 +143,18 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Capitalize first letter of a string
+   * Capitalizes the first letter of a string
+   * @param str String to capitalize
+   * @returns Capitalized string
    */
   private capitalizeFirstLetter(str: string): string {
     if (!str) return str;
     return str.charAt(0).toUpperCase() + str.slice(1).toLowerCase();
   }
+
   /**
-   * Update current time
+   * Updates the current time display
+   * Sets up an interval to update time every minute
    */
   updateTime(): void {
     this.currentTime = new Date().toLocaleTimeString([], {
@@ -129,7 +171,8 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Get date range based on current filter
+   * Calculates date range based on current filter
+   * @returns Object containing start and end dates
    */
   private getDateRange(): { startDate: Date; endDate: Date } {
     const now = new Date();
@@ -156,43 +199,8 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Load all dashboard data in a single optimized call
-   */
-  loadDashboardData(): void {
-    this.loading = true;
-    const { startDate, endDate } = this.getDateRange();
-
-    forkJoin({
-      expenses: this.expenseService.getExpenses({ startDate, endDate }),
-      summary: this.expenseService.getSummary({ startDate, endDate }),
-    })
-      .pipe(
-        switchMap(({ expenses, summary }) => {
-          this.expenses = expenses || [];
-          this.summary = summary;
-
-          return this.currencyService.convertExpensesToUSD(this.expenses);
-        }),
-        takeUntil(this.destroy$)
-      )
-      .subscribe({
-        next: (convertedExpenses) => {
-          this.expenses = convertedExpenses;
-          this.applyFilter();
-          this.updateSummaryTotals();
-          this.loading = false;
-        },
-        error: (error) => {
-          console.error('Error loading dashboard data:', error);
-          this.expenses = [];
-          this.filteredExpenses = [];
-          this.loading = false;
-        },
-      });
-  }
-
-  /**
-   * Apply current filter to expenses
+   * Applies the current filter to expenses and updates totals
+   * Handles pagination and updates filtered expenses list
    */
   applyFilter(): void {
     const now = new Date();
@@ -223,17 +231,23 @@ export class DashboardPage implements OnInit, OnDestroy {
         filtered = [...this.expenses];
     }
 
-    // Apply pagination
     const startIndex = 0;
     const endIndex = this.currentPage * this.itemsPerPage;
     this.filteredExpenses = filtered.slice(startIndex, endIndex);
     this.hasMoreExpenses = this.filteredExpenses.length < filtered.length;
 
-    this.updateTotals(filtered);
+    if (this.summary) {
+      this.totalExpenses = this.summary.totalExpenses;
+      this.totalIncome = this.summary.totalIncome;
+      this.totalBalance = this.summary.balance;
+    } else {
+      this.updateTotals(filtered);
+    }
   }
 
   /**
-   * Update financial totals
+   * Updates total expenses, income, and balance based on filtered expenses
+   * @param expenses Array of filtered expenses to calculate totals from
    */
   private updateTotals(expenses: ExpenseInterface[]): void {
     this.totalExpenses = expenses.reduce(
@@ -250,26 +264,13 @@ export class DashboardPage implements OnInit, OnDestroy {
         0
       )
     );
-    if (this.summary) {
-      this.totalIncome = this.summary.totalIncome;
-    }
 
     this.totalBalance = this.totalIncome - this.totalExpenses;
   }
 
   /**
-   * Update summary totals from service
-   */
-  private updateSummaryTotals(): void {
-    if (this.summary) {
-      this.totalExpenses = this.summary.totalExpenses;
-      this.totalIncome = this.summary.totalIncome;
-      this.totalBalance = this.summary.balance;
-    }
-  }
-
-  /**
-   * Load more expenses (pagination)
+   * Loads more expenses by incrementing the current page
+   * and applying the filter again
    */
   loadMoreExpenses(): void {
     this.currentPage++;
@@ -277,23 +278,22 @@ export class DashboardPage implements OnInit, OnDestroy {
   }
 
   /**
-   * Change filter and reload data
+   * Changes the current filter and triggers data reload
+   * @param filter New filter to apply
    */
   changeFilter(filter: string): void {
-    this.currentFilter = filter;
-    this.currentPage = 1;
-    this.loadDashboardData();
+    this.filterSubject.next(filter);
   }
 
   /**
-   * Navigate to add expense page
+   * Navigates to the add expense page
    */
   navigateToAddExpense(): void {
     this.router.navigate(['/add-expense']);
   }
 
   /**
-   * Handle logout
+   * Handles user logout with confirmation
    */
   logout(): void {
     if (confirm('Are you sure you want to logout?')) {
